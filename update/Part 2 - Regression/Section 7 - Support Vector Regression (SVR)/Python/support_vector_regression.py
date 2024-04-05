@@ -9,10 +9,7 @@ import pandas as pd
 dataset = pd.read_csv('Position_Salaries.csv')
 X = dataset.iloc[:, 1:-1].values
 y = dataset.iloc[:, -1].values
-print(X)
-print(y)
 y = y.reshape(len(y),1)
-print(y)
 
 # Feature Scaling
 from sklearn.preprocessing import StandardScaler
@@ -20,8 +17,6 @@ sc_X = StandardScaler()
 sc_y = StandardScaler()
 X = sc_X.fit_transform(X)
 y = sc_y.fit_transform(y)
-print(X)
-print(y)
 
 # Training the SVR model on the whole dataset
 from sklearn.svm import SVR
@@ -29,7 +24,7 @@ regressor = SVR(kernel = 'rbf')
 regressor.fit(X, y)
 
 # Predicting a new result
-sc_y.inverse_transform(regressor.predict(sc_X.transform([[6.5]])).reshape(-1,1))
+print(sc_y.inverse_transform(regressor.predict(sc_X.transform([[6.5]])).reshape(-1,1)))
 
 # Visualising the SVR results
 plt.scatter(sc_X.inverse_transform(X), sc_y.inverse_transform(y), color = 'red')
@@ -48,22 +43,4 @@ plt.plot(X_grid, sc_y.inverse_transform(regressor.predict(sc_X.transform(X_grid)
 plt.title('Truth or Bluff (SVR)')
 plt.xlabel('Position level')
 plt.ylabel('Salary')
-plt.show()
-
-#ADICIONAL: Para representar el modelo sin que los ejes X e Y estén estandarizados
-
-X_model = np.linspace(X_scaled.min(), X_scaled.max(), num=100).reshape(-1, 1)
-y_model = svm_regressor.predict(X_model).reshape(-1, 1)
-X_model = sc_X.inverse_transform(X_model)
-y_model = sc_y.inverse_transform(y_model)
-
-from matplotlib.ticker import FormatStrFormatter
-plt.figure(figsize=(8, 6))
-plt.axes().yaxis.set_major_formatter(FormatStrFormatter('%.0f'))
-plt.scatter(X, y, color='red', label='Dataset')
-plt.plot(X_model, y_model, color="green", label='SVR model')
-plt.title('SVM Regressor', fontsize=16) plt.xlabel('Level')
-plt.ylabel('Salary')
-plt.grid()
-plt.legend()
 plt.show()
